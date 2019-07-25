@@ -134,8 +134,8 @@
      (when-not @socket
        (let [output-dir   (io/file (util/output-directory opts))
              _            (.mkdirs output-dir)
-             of           (io/file output-dir "node_repl.js")
-             _            (spit of (slurp (io/resource "cljs/repl/node_repl.js")))
+             of           (io/file output-dir "node_async_repl.js")
+             _            (spit of (slurp (io/resource "cljs/repl/node_async_repl.js")))
              proc         (.start (build-process opts repl-env of))
              env          (ana/empty-env)
              core         (io/resource "cljs/core.cljs")
@@ -245,7 +245,7 @@
 (defrecord NodeEnv [host port path socket proc state]
   repl/IReplEnvOptions
   (-repl-options [this]
-    {:output-dir ".cljs_node_repl"
+    {:output-dir ".cljs_node_async_repl"
      :wrap wrap-fn
      :target :nodejs})
   repl/IParseError
