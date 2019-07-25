@@ -115,6 +115,7 @@
   (let [xs   (cond-> [(get opts :node-command "node")]
                (:debug-port repl-env) (conj (str "--inspect=" (:debug-port repl-env))))
         proc (-> (ProcessBuilder. (into-array xs)) (.redirectInput input-src))]
+    (when-let [port (:port repl-env)] (.put (.environment proc) "PORT" (.toString port)))
     (when-let [path-fs (:path repl-env)]
       (.put (.environment proc)
             "NODE_PATH"
@@ -134,10 +135,7 @@
        (let [output-dir   (io/file (util/output-directory opts))
              _            (.mkdirs output-dir)
              of           (io/file output-dir "node_repl.js")
-             _            (spit of
-                            (string/replace (slurp (io/resource "cljs/repl/node_repl.js"))
-                              "var PORT = 5001;"
-                              (str "var PORT = " (:port repl-env) ";")))
+             _            (spit of (slurp (io/resource "cljs/repl/node_repl.js")))
              proc         (.start (build-process opts repl-env of))
              env          (ana/empty-env)
              core         (io/resource "cljs/core.cljs")
