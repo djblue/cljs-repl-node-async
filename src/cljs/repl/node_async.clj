@@ -29,8 +29,7 @@
 
 (defn thread-name []
   (let [name (.getName (Thread/currentThread))]
-    (if (string/starts-with? name "nREPL") "main" name)
-    "main"))
+    (if (string/starts-with? name "nREPL") "main" name)))
 
 (defn create-socket [^String host port]
   (let [socket (Socket. host (int port))
@@ -229,7 +228,7 @@
             'use 'use-macros 'import 'refer-clojure} (first form)))
     identity
 
-    ('#{*1 *2 *3 *e} form) (fn [x] `(cljs.core.pr-str ~x))
+    ('#{*1 *2 *3 *e} form) identity
     :else
     (fn [x]
       `(try

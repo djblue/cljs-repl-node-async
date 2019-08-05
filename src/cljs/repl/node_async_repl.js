@@ -25,8 +25,8 @@ function isPromise (value) {
 }
 
 function toString (value) {
-  if (value === undefined || value === null) {
-    return null
+  if (value === undefined || value == null) {
+    return "nil"
   }
 
   if (global.cljs !== undefined) {
@@ -96,7 +96,9 @@ var server = net.createServer(function (socket) {
       dom.run(function () {
         var obj = JSON.parse(data)
         repl = obj.repl
-        ret = vm.runInThisContext(obj.form, 'repl')
+        // fixes issue with require returning "nil" string
+        var form = obj.form.replace("'nil';", "null;")
+        ret = vm.runInThisContext(form, 'repl')
       })
     } catch (e) {
       err = e
