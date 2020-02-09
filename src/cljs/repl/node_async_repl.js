@@ -29,6 +29,13 @@ function toString (value) {
     return "nil"
   }
 
+  // protect against printing circular structures
+  try {
+    JSON.stringify(value)
+  } catch (e) {
+    return "nil"
+  }
+
   if (global.cljs !== undefined) {
     return cljs.core.pr_str.call(null, value)
   }
